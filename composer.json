@@ -14,10 +14,6 @@
         "ext-curl": "*",
         "ext-json": "*"
     },
-    "require-dev": {
-        "squizlabs/php_codesniffer": "~1.5",
-        "phpdocumentor/phpdocumentor": "~2.5"
-    },
     "autoload": {
         "psr-4": {
             "Avos\\": "src/Avos/"
