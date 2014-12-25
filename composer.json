@@ -1,0 +1,11 @@
+{
+    "name": "bigbing/avos-php-sdk",
+    "description": "Avos php sdk not offical",
+    "authors": [
+        {
+            "name": "bigbing",
+            "email": "aidai524@gmail.com"
+        }
+    ],
+    "require": {}
+}
