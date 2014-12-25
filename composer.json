@@ -1,11 +1,26 @@
 {
     "name": "bigbing/avos-php-sdk",
     "description": "Avos php sdk not offical",
+    "keywords": ["parse", "sdk"],
+    "type": "library",
     "authors": [
         {
             "name": "bigbing",
             "email": "aidai524@gmail.com"
         }
-    ],
-    "require": {}
+    ],    
+    "require": {
+        "php": ">=5.4.0",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "~1.5",
+        "phpdocumentor/phpdocumentor": "~2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Avos\\": "src/Avos/"
+        }
+    },
 }
