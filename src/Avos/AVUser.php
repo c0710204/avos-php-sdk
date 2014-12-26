@@ -143,24 +143,6 @@ class AVUser extends AVObject
   }
 
   /**
-   * Logs in a user with a session token.  Calls the /users/me route and if
-   *   valid, creates and returns the current user.
-   *
-   * @param string $sessionToken
-   *
-   * @return AVUser
-   */
-  public static function become($sessionToken)
-  {
-    $result = AVClient::_request('GET', '/users/me', $sessionToken);
-    $user = new AVUser();
-    $user->_mergeAfterFetch($result);
-    $user->handleSaveResult(true);
-    AVClient::getStorage()->set("user", $user);
-    return $user;
-  }
-
-  /**
    * Log out the current user.  This will clear the storage and future calls
    *   to current will return null
    *
