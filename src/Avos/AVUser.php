@@ -171,6 +171,16 @@ class AVUser extends AVObject {
 
     /**
      * @param $mobilePhoneNumber
+     * @throws AVException
+     */
+    public static function requestLoginSmsCode($mobilePhoneNumber)
+    {
+        $json = json_encode(array('mobilePhoneNumber' => $mobilePhoneNumber));
+        AVClient::_request('POST', '/requestLoginSmsCode', null, $json);
+    }
+
+    /**
+     * @param $mobilePhoneNumber
      * @param $smsCode
      * @return AVUser
      * @throws AVException
@@ -276,6 +286,76 @@ class AVUser extends AVObject {
     }
 
     /**
+     * @param $objectId
+     * @return mixed
+     * @throws AVException
+     */
+    public static function findByObjectId($objectId)
+    {
+        if (!$objectId)
+        {
+            throw new AVException("Cannot find user with an empty object id");
+        }
+        $user = AVClient::_request("GET", "/users/" . $objectId, "", null);
+
+        return $user;
+    }
+
+    /**
+     * @param $objectId
+     * @param $data
+     * @return mixed
+     * @throws AVException
+     */
+    public static function updateByObjectId($objectId, $data)
+    {
+        if (!$objectId)
+        {
+            throw new AVException("Cannot update user with an empty object id");
+        }
+        $updatedAt = AVClient::_request("PUT", "/users/" . $objectId, "", $data);
+
+        return $updatedAt;
+    }
+
+    /**
+     * @param $objectId
+     * @param $oldPssword
+     * @param $newPssword
+     * @return mixed
+     * @throws AVException
+     */
+    public static function updatePassword($objectId, $oldPssword, $newPssword)
+    {
+        if (!$objectId)
+        {
+            throw new AVException("Cannot update user with an empty object id");
+        }
+        if (!$oldPssword)
+        {
+            throw new AVException("Cannot change password with an empty old pssword");
+        }
+        if (!$newPssword)
+        {
+            throw new AVException("Cannot change password with an empty new password");
+        }
+        $data = array('old_password' => $oldPssword, 'new_password' => $newPssword);
+        $updatedAt = AVClient::_request("PUT", "/users/" . $objectId . 'updatePassword', "", $data);
+
+        return $updatedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function findAll()
+    {
+        $users = AvClient::__request("GET", "/users", "", null);
+
+        return $users;
+    }
+
+    /**
      * Persists the current user to the storage provider.
      *
      * @return null
@@ -284,6 +364,14 @@ class AVUser extends AVObject {
     {
         $storage = AVClient::getStorage();
         $storage->set('user', AVUser::getCurrentUser());
+    }
+
+    /**
+     * @param $objectId
+     */
+    public static function deleteByObjectId($objectId)
+    {
+        AvClient::__request("DELETE", "/users/" . $objectId, "", null);
     }
 
     /**
@@ -364,7 +452,27 @@ class AVUser extends AVObject {
      */
     public static function verifyMobilePhone($verifyCode)
     {
-        AVClient::_request('POST', '/requestPasswordReset/' . $verifyCode, null, null);
+        AVClient::_request('POST', '/verifyMobilePhone/' . $verifyCode, null, null);
+    }
+
+    /**
+     * @param $mobilePhoneNumber
+     * @throws AVException
+     */
+    public static function requestMobilePhoneVerify($mobilePhoneNumber)
+    {
+        $json = json_encode(array('$mobilePhoneNumber' => $$mobilePhoneNumber));
+        AVClient::_request('POST', '/requestPasswordReset', null, $json);
+    }
+
+    /**
+     * @param $mobilePhoneNumber
+     * @throws AVException
+     */
+    public static function requestPasswordResetBySmsCode($mobilePhoneNumber)
+    {
+        $json = json_encode(array('$mobilePhoneNumber' => $$mobilePhoneNumber));
+        AVClient::_request('POST', '/requestPasswordResetBySmsCode', null, $json);
     }
 
     /**
@@ -375,7 +483,7 @@ class AVUser extends AVObject {
     public static function resetPasswordBySmsCode($verifyCode, $newPassword)
     {
         $json = json_encode(array('password' => $newPassword));
-        AVClient::_request('POST', '/resetPasswordBySmsCode/' . $verifyCode, null, $json);
+        AVClient::_request('PUT', '/resetPasswordBySmsCode/' . $verifyCode, null, $json);
     }
 
     /**
