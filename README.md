@@ -1,7 +1,7 @@
 Avos PHP SDK
 -------------
 
-Leancloud的PHP SDK，参考的Parse SDK做的一个版本，差异性主要是Leancloud和[Parse](https://github.com/ParsePlatform/parse-php-sdk)的部分接口的区别。
+Leancloud的PHP SDK，参考的[Parse SDK](https://github.com/ParsePlatform/parse-php-sdk)做的一个版本，差异性主要是Leancloud和Parse的部分接口的区别。
 
 安装
 ------------
