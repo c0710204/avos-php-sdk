@@ -13,9 +13,11 @@ session_start();
 AVClient::initialize('your_app_id', 'your_app_key', 'your_master_key');
 AVClient::setStorage(new AVSessionStorage());
 
-try {
-    AVUser::logIn('username','password');
+try
+{
+    AVUser::logIn('username', 'password');
     echo "login";
-} catch (AVException $ex) {
-	var_dump($ex->getMessage());
+} catch (AVException $ex)
+{
+    var_dump($ex->getMessage());
 }

@@ -10,9 +10,8 @@ use Avos\AVObject;
  * @package  Avos
  * @author   Joe Chu <aidai524@gmail.com>
  */
-class AVInstallation extends AVObject
-{
+class AVInstallation extends AVObject {
 
-  public static $avClassName = "_Installation";
+    public static $avClassName = "_Installation";
 
 }

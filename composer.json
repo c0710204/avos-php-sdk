@@ -1,14 +1,17 @@
 {
     "name": "bigbing/avos-php-sdk",
     "description": "Avos php sdk not offical",
-    "keywords": ["avos", "sdk"],
+    "keywords": [
+        "avos",
+        "sdk"
+    ],
     "type": "library",
     "authors": [
         {
             "name": "bigbing",
             "email": "aidai524@gmail.com"
         }
-    ],    
+    ],
     "require": {
         "php": ">=5.4.0",
         "ext-curl": "*",

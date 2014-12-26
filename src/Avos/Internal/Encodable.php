@@ -9,14 +9,13 @@ namespace Avos\Internal;
  * @package  Avos
  * @author   Joe Chu <aidai524@gmail.com>
  */
-interface Encodable
-{
+interface Encodable {
 
-  /**
-   * Returns an associate array encoding of the implementing class.
-   *
-   * @return mixed
-   */
-  public function _encode();
+    /**
+     * Returns an associate array encoding of the implementing class.
+     *
+     * @return mixed
+     */
+    public function _encode();
 
 }
