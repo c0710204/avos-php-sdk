@@ -5,7 +5,7 @@ namespace Avos;
 use Avos\Internal\Encodable;
 
 /**
- * ParseClient - Main class for Parse initialization and communication
+ * AVClient - Main class for Avos initialization and communication
  *
  * @package  Avos
  * @author   Joe Chu <aidai524@gmail.com>
@@ -35,49 +35,48 @@ final class AvClient
   private static $masterKey;
 
   /**
-   * @var ParseStorageInterface Object for managing persistence
+   * @var AVStorageInterface Object for managing persistence
    */
   private static $storage;
 
   /**
-   * Parse\Client::initialize, must be called before using Parse features.
+   * Avos\Client::initialize, must be called before using Avos features.
    *
-   * @param string $app_id     Parse Application ID
-   * @param string $app_key   Parse REST API Key
-   * @param string $master_key Parse Master Key
+   * @param string $app_id     Avos Application ID
+   * @param string $app_key   Avos REST API Key
+   * @param string $master_key Avos Master Key
    *
    * @return null
    */
   public static function initialize($app_id, $app_key, $master_key)
   {
-    echo 'Init ok';
-    // ParseUser::registerSubclass();
-    // ParseRole::registerSubclass();
-    // ParseInstallation::registerSubclass();
-    // self::$applicationId = $app_id;
-    // self::$appKey = $app_key;
-    // self::$masterKey = $master_key;
-    // if (!static::$storage) {
-    //   if (session_status() === PHP_SESSION_ACTIVE) {
-    //     self::setStorage(new ParseSessionStorage());
-    //   } else {
-    //     self::setStorage(new ParseMemoryStorage());
-    //   }
-    // }
+    AVUser::registerSubclass();
+    AVRole::registerSubclass();    
+    AVInstallation::registerSubclass();    
+    self::$applicationId = $app_id;
+    self::$appKey = $app_key;
+    self::$masterKey = $master_key;;
+    if (!static::$storage) {
+      if (session_status() === PHP_SESSION_ACTIVE) {
+        self::setStorage(new AVSessionStorage());
+      } else {
+        self::setStorage(new AVMemoryStorage());
+      }
+    }
   }
 
   /**
-   * ParseClient::_encode, internal method for encoding object values.
+   * AVClient::_encode, internal method for encoding object values.
    *
    * @param mixed $value             Value to encode
-   * @param bool  $allowParseObjects Allow nested objects
+   * @param bool  $allowAVObjects Allow nested objects
    *
    * @return mixed Encoded results.
    *
    * @throws \Exception
    * @ignore
    */
-  public static function _encode($value, $allowParseObjects)
+  public static function _encode($value, $allowAVObjects)
   {
     if ($value instanceof \DateTime) {
       return array(
@@ -89,9 +88,9 @@ final class AvClient
       return $value;
     }
 
-    if ($value instanceof ParseObject) {
-      if (!$allowParseObjects) {
-        throw new \Exception('ParseObjects not allowed here.');
+    if ($value instanceof AVObject) {
+      if (!$allowAVObjects) {
+        throw new \Exception('AVObjects not allowed here.');
       }
       return $value->_toPointer();
     }
@@ -101,7 +100,7 @@ final class AvClient
     }
 
     if (is_array($value)) {
-      return self::_encodeArray($value, $allowParseObjects);
+      return self::_encodeArray($value, $allowAVObjects);
     }
 
     if (!is_scalar($value) && $value !== null) {
@@ -111,7 +110,7 @@ final class AvClient
   }
 
   /**
-   * ParseClient::_decode, internal method for decoding server responses.
+   * AVClient::_decode, internal method for decoding server responses.
    *
    * @param mixed $data The value to decode
    *
@@ -120,7 +119,7 @@ final class AvClient
    */
   public static function _decode($data)
   {
-    // The json decoded response from Parse will make JSONObjects into stdClass
+    // The json decoded response from Avos will make JSONObjects into stdClass
     //   objects.  We'll change it to an associative array here.
     if ($data instanceof \stdClass) {
       $tmp = (array)$data;
@@ -145,19 +144,19 @@ final class AvClient
       }
 
       if ($typeString === 'Pointer') {
-        return ParseObject::create($data['className'], $data['objectId']);
+        return AVObject::create($data['className'], $data['objectId']);
       }
 
       if ($typeString === 'File') {
-        return ParseFile::_createFromServer($data['name'], $data['url']);
+        return AVFile::_createFromServer($data['name'], $data['url']);
       }
 
       if ($typeString === 'GeoPoint') {
-        return new ParseGeoPoint($data['latitude'], $data['longitude']);
+        return new AVGeoPoint($data['latitude'], $data['longitude']);
       }
 
       if ($typeString === 'Object') {
-        $output = ParseObject::create($data['className']);
+        $output = AVObject::create($data['className']);
         $output->_mergeAfterFetch($data);
         return $output;
       }
@@ -178,25 +177,25 @@ final class AvClient
   }
 
   /**
-   * ParseClient::_encodeArray, internal method for encoding arrays.
+   * AVClient::_encodeArray, internal method for encoding arrays.
    *
    * @param array $value             Array to encode.
-   * @param bool  $allowParseObjects Allow nested objects.
+   * @param bool  $allowAVObjects Allow nested objects.
    *
    * @return array Encoded results.
    * @ignore
    */
-  public static function _encodeArray($value, $allowParseObjects)
+  public static function _encodeArray($value, $allowAVObjects)
   {
     $output = array();
     foreach ($value as $key => $item) {
-      $output[$key] = self::_encode($item, $allowParseObjects);
+      $output[$key] = self::_encode($item, $allowAVObjects);
     }
     return $output;
   }
 
   /**
-   * Parse\Client::_request, internal method for communicating with Parse.
+   * Avos\Client::_request, internal method for communicating with Avos.
    *
    * @param string $method       HTTP Method for this request.
    * @param string $relativeUrl  REST API Path.
@@ -204,7 +203,7 @@ final class AvClient
    * @param null   $data         Data to provide with the request.
    * @param bool   $useMasterKey Whether to use the Master Key.
    *
-   * @return mixed          Result from Parse API Call.
+   * @return mixed          Result from Avos API Call.
    * @throws \Exception
    * @ignore
    */
@@ -214,7 +213,7 @@ final class AvClient
     if ($data === '[]') {
       $data = '{}';
     }
-    self::assertParseInitialized();
+    self::assertAVInitialized();
     $headers = self::_getRequestHeaders($sessionToken, $useMasterKey);
 
     $url = self::HOST_NAME . $relativeUrl;
@@ -242,16 +241,16 @@ final class AvClient
     $status = curl_getinfo($rest, CURLINFO_HTTP_CODE);
     $contentType = curl_getinfo($rest, CURLINFO_CONTENT_TYPE);
     if (curl_errno($rest)) {
-      throw new ParseException(curl_error($rest), curl_errno($rest));
+      throw new AVException(curl_error($rest), curl_errno($rest));
     }
     curl_close($rest);
     if (strpos($contentType, 'text/html') !== false) {
-      throw new ParseException('Bad Request', -1);
+      throw new AVException('Bad Request', -1);
     }
 
     $decoded = json_decode($response, true);
     if (isset($decoded['error'])) {
-      throw new ParseException($decoded['error'],
+      throw new AVException($decoded['error'],
         isset($decoded['code']) ? $decoded['code'] : 0
       );
     }
@@ -260,23 +259,22 @@ final class AvClient
   }
 
   /**
-   * ParseClient::setStorage, will update the storage object used for
+   * AVClient::setStorage, will update the storage object used for
    * persistence.
    *
-   * @param ParseStorageInterface $storageObject
+   * @param AVStorageInterface $storageObject
    *
    * @return null
    */
-  public static function setStorage(ParseStorageInterface $storageObject)
+  public static function setStorage(AVStorageInterface $storageObject)
   {
     self::$storage = $storageObject;
   }
 
   /**
-   * ParseClient::getStorage, will return the storage object used for
+   * AVClient::getStorage, will return the storage object used for
    * persistence.
-
-   * @return ParseStorageInterface
+   * @return AVStorageInterface
    */
   public static function getStorage()
   {
@@ -284,7 +282,7 @@ final class AvClient
   }
 
   /**
-   * ParseClient::_unsetStorage, will null the storage object.
+   * AVClient::_unsetStorage, will null the storage object.
    *
    * Without some ability to clear the storage objects, all test cases would
    *   use the first assigned storage object.
@@ -297,11 +295,11 @@ final class AvClient
     self::$storage = null;
   }
 
-  private static function assertParseInitialized()
+  private static function assertAVInitialized()
   {
     if (self::$applicationId === null) {
       throw new \Exception(
-        'You must call Parse::initialize() before making any requests.'
+        'You must call AvClient::initialize() before making any requests.'
       );
     }
   }
@@ -334,7 +332,7 @@ final class AvClient
   }
 
   /**
-   * Get a date value in the format stored on Parse.
+   * Get a date value in the format stored on Avos.
    *
    * All the SDKs do some slightly different date handling.
    * PHP provides 6 digits for the microseconds (u) so we have to chop 3 off.
@@ -352,10 +350,10 @@ final class AvClient
   }
 
   /**
-   * Get a date value in the format to use in Local Push Scheduling on Parse.
+   * Get a date value in the format to use in Local Push Scheduling on Avos.
    *
    * All the SDKs do some slightly different date handling.
-   * Format from Parse doc: an ISO 8601 date without a time zone, i.e. 2014-10-16T12:00:00 .
+   * Format from Avos doc: an ISO 8601 date without a time zone, i.e. 2014-10-16T12:00:00 .
    *
    * @param \DateTime $value DateTime value to format.
    *

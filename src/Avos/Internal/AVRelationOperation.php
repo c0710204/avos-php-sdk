@@ -9,10 +9,10 @@ use Avos\AVClient;
  * AVRelationOperation - A class that is used to manage AVRelation changes such as object add or remove.
  *
  * @package  Avos
- * @author   Mohamed Madbouli <mohamedmadbouli@fb.com>
+ * @author   Joe Chu <aidai524@gmail.com>
  */
 
-class AVRelationOperation implements  FieldOperation{
+class AVRelationOperation implements FieldOperation{
 
   /**
    * @var string - The className of the target objects.
