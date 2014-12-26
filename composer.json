@@ -1,7 +1,7 @@
 {
     "name": "bigbing/avos-php-sdk",
     "description": "Avos php sdk not offical",
-    "keywords": ["parse", "sdk"],
+    "keywords": ["avos", "sdk"],
     "type": "library",
     "authors": [
         {
