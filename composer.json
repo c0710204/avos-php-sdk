@@ -2,6 +2,7 @@
     "name": "bigbing/avos-php-sdk",
     "description": "Avos php sdk not offical",
     "keywords": [
+        "leancloud",
         "avos",
         "sdk"
     ],
