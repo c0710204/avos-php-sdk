@@ -317,9 +317,10 @@ class AVUser extends AVObject {
     /**
      * Save the current user object, unless it is not signed up.
      *
+     * @param bool $useMasterKey
+     * @throws AVException
      * @return null
      *
-     * @throws AVException
      */
     public function save($useMasterKey = false)
     {
@@ -330,6 +331,16 @@ class AVUser extends AVObject {
         {
             throw new AVException("You must call signUp to create a new User.");
         }
+    }
+
+    /**
+     * @param $email
+     * @throws AVException
+     */
+    public static function requestEmailVerify($email)
+    {
+        $json = json_encode(array('email' => $email));
+        AVClient::_request('POST', '/requestEmailVerify', null, $json);
     }
 
     /**
@@ -345,6 +356,26 @@ class AVUser extends AVObject {
     {
         $json = json_encode(array('email' => $email));
         AVClient::_request('POST', '/requestPasswordReset', null, $json);
+    }
+
+    /**
+     * @param $verifyCode
+     * @throws AVException
+     */
+    public static function verifyMobilePhone($verifyCode)
+    {
+        AVClient::_request('POST', '/requestPasswordReset/' . $verifyCode, null, null);
+    }
+
+    /**
+     * @param $verifyCode
+     * @param $newPassword
+     * @throws AVException
+     */
+    public static function resetPasswordBySmsCode($verifyCode, $newPassword)
+    {
+        $json = json_encode(array('password' => $newPassword));
+        AVClient::_request('POST', '/resetPasswordBySmsCode/' . $verifyCode, null, $json);
     }
 
     /**
