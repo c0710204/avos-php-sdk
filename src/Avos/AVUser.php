@@ -142,6 +142,60 @@ class AVUser extends AVObject {
     }
 
     /**
+     * Logs in with mobile phone and returns a valid AVUser, or throws if invalid.
+     *
+     * @param $mobilePhoneNumber
+     * @param $password
+     * @return AVUser
+     * @throws AVException
+     */
+    public static function logInWithMobilePhone($mobilePhoneNumber, $password)
+    {
+        if (!$mobilePhoneNumber)
+        {
+            throw new AVException("Cannot log in user with an empty phone");
+        }
+        if (!$password)
+        {
+            throw new AVException("Cannot log in user with an empty password.");
+        }
+        $data = array("mobilePhoneNumber" => $mobilePhoneNumber, "password" => $password);
+        $result = AVClient::_request("GET", "/login", "", $data);
+        $user = new AVUser();
+        $user->_mergeAfterFetch($result);
+        $user->handleSaveResult(true);
+        AVClient::getStorage()->set("user", $user);
+
+        return $user;
+    }
+
+    /**
+     * @param $mobilePhoneNumber
+     * @param $smsCode
+     * @return AVUser
+     * @throws AVException
+     */
+    public static function logInWithSmsCode($mobilePhoneNumber, $smsCode)
+    {
+        if (!$mobilePhoneNumber)
+        {
+            throw new AVException("Cannot log in user with an empty phone");
+        }
+        if (!$smsCode)
+        {
+            throw new AVException("Cannot log in user with an empty sms code.");
+        }
+        $data = array("mobilePhoneNumber" => $mobilePhoneNumber, "smsCode" => $smsCode);
+        $result = AVClient::_request("GET", "/login", "", $data);
+        $user = new AVUser();
+        $user->_mergeAfterFetch($result);
+        $user->handleSaveResult(true);
+        AVClient::getStorage()->set("user", $user);
+
+        return $user;
+    }
+
+    /**
      * Log out the current user.  This will clear the storage and future calls
      *   to current will return null
      *
