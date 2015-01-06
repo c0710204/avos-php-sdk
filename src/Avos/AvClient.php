@@ -10,7 +10,7 @@ use Avos\Internal\Encodable;
  * @package  Avos
  * @author   Joe Chu <aidai524@gmail.com>
  */
-final class AvClient {
+final class AVClient {
 
     /**
      * Constant for the API Server Host Address.
