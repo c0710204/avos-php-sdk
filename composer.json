@@ -1,6 +1,6 @@
 {
-    "name": "bigbing/avos-php-sdk",
-    "description": "Avos php sdk not offical",
+    "name": "c0710204/avos-php-sdk",
+    "description": "Avos php sdk not offical,debug by c0710204",
     "keywords": [
         "leancloud",
         "avos",
@@ -11,6 +11,10 @@
         {
             "name": "bigbing",
             "email": "aidai524@gmail.com"
+        },
+		 {
+            "name": "c0710204",
+            "email": "c0710204@gmail.com"
         }
     ],
     "require": {
